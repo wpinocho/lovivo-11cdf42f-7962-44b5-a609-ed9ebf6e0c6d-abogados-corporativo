@@ -25,21 +25,21 @@ export const NewsletterSection = () => {
                     <Mail className="h-8 w-8 text-primary" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-foreground">
+                <h3 className="font-playfair text-2xl font-bold text-foreground">
                   ¡Gracias por suscribirte!
                 </h3>
-                <p className="text-muted-foreground">
-                  Recibirás nuestras mejores ofertas y promociones pronto.
+                <p className="font-inter text-muted-foreground">
+                  Recibirás nuestras actualizaciones legales y novedades regulatorias.
                 </p>
               </div>
             ) : (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-foreground">
-                    ¿Quieres recibir correos promocionales?
+                  <h3 className="font-playfair text-2xl font-bold text-foreground">
+                    Boletín Jurídico J/A
                   </h3>
-                  <p className="text-lg text-muted-foreground">
-                    Suscríbete a nuestro boletín y obtén ofertas exclusivas
+                  <p className="font-inter text-base text-muted-foreground">
+                    Suscríbase y reciba actualizaciones sobre legislación ambiental, laboral y normativa regulatoria en el Perú.
                   </p>
                 </div>
                 
@@ -62,7 +62,7 @@ export const NewsletterSection = () => {
                   <Button 
                     type="submit"
                     disabled={logic.isSubmitting}
-                    className="sm:w-auto"
+                    className="sm:w-auto font-inter text-xs font-semibold tracking-[0.2em] uppercase"
                   >
                     {logic.isSubmitting ? 'Suscribiendo...' : 'Suscribirse'}
                   </Button>

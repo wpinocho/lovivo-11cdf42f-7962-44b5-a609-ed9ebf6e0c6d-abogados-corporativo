@@ -1,20 +1,16 @@
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
-import { ProductCard } from '@/components/ProductCard';
-import { CollectionCard } from '@/components/CollectionCard';
-import { FloatingCart } from '@/components/FloatingCart';
-import { NewsletterSection } from '@/components/NewsletterSection';
 import { EcommerceTemplate } from '@/templates/EcommerceTemplate';
-import { BundleCard } from '@/components/ui/BundleCard';
-import { useBundles } from '@/hooks/useBundles';
+import { LawHeroSection } from '@/components/LawHeroSection';
+import { LawServicesSection } from '@/components/LawServicesSection';
+import { LawTrustSection } from '@/components/LawTrustSection';
+import { LawAboutSection } from '@/components/LawAboutSection';
+import { LawCTASection } from '@/components/LawCTASection';
+import { NewsletterSection } from '@/components/NewsletterSection';
+import { ProductCard } from '@/components/ProductCard';
 import type { UseIndexLogicReturn } from '@/components/headless/HeadlessIndex';
 
 /**
- * EDITABLE UI - IndexUI
- * 
- * Interfaz completamente editable para la página principal.
- * El agente IA puede modificar colores, textos, layout, etc.
+ * EDITABLE UI — IndexUI (Law Firm Edition)
+ * J/A Abogados y Consultores — Justice by Attorneys
  */
 
 interface IndexUIProps {
@@ -22,129 +18,63 @@ interface IndexUIProps {
 }
 
 export const IndexUI = ({ logic }: IndexUIProps) => {
-  const {
-    collections,
-    loading,
-    loadingCollections,
-    selectedCollectionId,
-    filteredProducts,
-    handleViewCollectionProducts,
-    handleShowAllProducts
-  } = logic;
-
-  const { bundles, loading: loadingBundles } = useBundles();
+  const { filteredProducts, loading } = logic;
 
   return (
-    <EcommerceTemplate
-      showCart={true}>
+    <EcommerceTemplate showCart={true} layout="full-width">
 
-      {/* Hero Section */}
-      <section className="bg-background py-12 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            Descubre Nuestros Productos
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            ​
-          </p>
-        </div>
-      </section>
+      {/* Hero — full screen, flush with header */}
+      <LawHeroSection />
 
-      {/* Collections Section */}
-      {loadingCollections ?
-      <section id="collections" className="py-12 bg-muted/30">
+      {/* Practice Areas */}
+      <LawServicesSection />
+
+      {/* Trust Stats */}
+      <LawTrustSection />
+
+      {/* About Founder */}
+      <LawAboutSection />
+
+      {/* Legal Services / Consultation Products */}
+      {(loading || filteredProducts.length > 0) && (
+        <section id="consultas" className="py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="h-8 w-48 bg-muted rounded animate-pulse mb-8"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) =>
-            <div key={i} className="bg-muted rounded-lg animate-pulse" style={{ aspectRatio: '4/3' }}></div>
-            )}
+            <div className="text-center mb-16">
+              <div className="flex items-center justify-center gap-3 mb-5">
+                <div className="h-px w-10 bg-primary/60" />
+                <span className="font-inter text-primary text-xs font-medium tracking-[0.4em] uppercase">
+                  Servicios
+                </span>
+                <div className="h-px w-10 bg-primary/60" />
+              </div>
+              <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-foreground">
+                Consultas y Servicios
+              </h2>
             </div>
-          </div>
-        </section> :
-      collections.length > 0 ?
-      <section id="collections" className="py-12 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-foreground mb-8">
-              Nuestras Colecciones
-            </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {collections.map((collection, index) =>
-            <CollectionCard
-              key={collection.id}
-              collection={collection}
-              onViewProducts={handleViewCollectionProducts}
-              eager={index === 0} />
 
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="bg-card border border-border h-80 animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
             )}
-            </div>
-          </div>
-        </section> :
-      null}
-
-      {/* Bundles Section */}
-      {!loadingBundles && bundles.length > 0 &&
-      <section id="bundles" className="py-12 bg-muted/30">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-foreground mb-8">
-              Paquetes Especiales
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {bundles.map((bundle) =>
-            <BundleCard key={bundle.id} bundle={bundle} />
-            )}
-            </div>
           </div>
         </section>
-      }
+      )}
 
-      {/* Products Section */}
-      <section id="products" className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-foreground">
-              {selectedCollectionId ?
-              `Productos de ${collections.find((c) => c.id === selectedCollectionId)?.name || 'Colección'}` :
-              'Productos Destacados'
-              }
-            </h2>
-            {selectedCollectionId &&
-            <Button
-              variant="outline"
-              onClick={handleShowAllProducts}>
+      {/* CTA + Contact + Vision / Mission */}
+      <LawCTASection />
 
-                Ver Todos los Productos
-              </Button>
-            }
-          </div>
-          
-          {loading ?
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) =>
-            <div key={i} className="bg-muted rounded-lg h-80 animate-pulse"></div>
-            )}
-            </div> :
-          filteredProducts.length > 0 ?
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filteredProducts.map((product) =>
-            <ProductCard key={product.id} product={product} />
-            )}
-            </div> :
-
-          <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                No hay productos disponibles.
-              </p>
-            </div>
-          }
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
+      {/* Newsletter */}
       <NewsletterSection />
 
-      <FloatingCart />
-    </EcommerceTemplate>);
-
+    </EcommerceTemplate>
+  );
 };

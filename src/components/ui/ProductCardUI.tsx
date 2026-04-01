@@ -7,17 +7,8 @@ import { usePriceRules } from "@/hooks/usePriceRules"
 import type { Product } from "@/lib/supabase"
 
 /**
- * EDITABLE UI COMPONENT - ProductCardUI
- * 
- * Este componente solo maneja la presentación del ProductCard.
- * Toda la lógica viene del HeadlessProductCard.
- * 
- * PUEDES MODIFICAR LIBREMENTE:
- * - Colores, temas, estilos
- * - Textos e idioma
- * - Layout y estructura visual
- * - Animaciones y efectos
- * - Agregar features visuales (hover effects, etc.)
+ * EDITABLE UI COMPONENT — ProductCardUI
+ * J/A Abogados y Consultores edition — dark navy + gold
  */
 
 interface ProductCardUIProps {
@@ -31,60 +22,80 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
   return (
     <HeadlessProductCard product={product}>
       {(logic) => (
-        <Card className="bg-white border border-gray-200">
-          <CardContent className="p-4">
+        <Card className="bg-card border border-border hover:border-primary/50 transition-colors duration-300 overflow-hidden">
+          <CardContent className="p-0">
             <Link to={`/productos/${logic.product.slug}`} className="block">
-              <div className="aspect-square bg-gray-100 rounded-md mb-3 overflow-hidden relative group" style={{ aspectRatio: '1/1' }}>
-                {(logic.matchingVariant?.image || (logic.product.images && logic.product.images.length > 0)) ? (
+              {/* Image */}
+              <div
+                className="bg-muted overflow-hidden relative group"
+                style={{ aspectRatio: '1/1' }}
+              >
+                {(logic.matchingVariant?.image ||
+                  (logic.product.images && logic.product.images.length > 0)) ? (
                   <>
-                    {/* Primary image - only fade on hover if there's a second image */}
                     <img
-                      src={logic.matchingVariant?.image_urls?.[0] || (logic.matchingVariant?.image as any) || logic.product.images![0]}
+                      src={
+                        logic.matchingVariant?.image_urls?.[0] ||
+                        (logic.matchingVariant?.image as any) ||
+                        logic.product.images![0]
+                      }
                       alt={logic.product.title}
                       loading="lazy"
                       decoding="async"
                       className={`w-full h-full object-contain transition-opacity duration-300 ${
-                        logic.product.images && logic.product.images.length > 1 && !logic.matchingVariant?.image && !logic.matchingVariant?.image_urls?.[0]
+                        logic.product.images &&
+                        logic.product.images.length > 1 &&
+                        !logic.matchingVariant?.image &&
+                        !logic.matchingVariant?.image_urls?.[0]
                           ? 'group-hover:opacity-0'
                           : ''
                       }`}
                     />
-                    {/* Secondary image on hover (only if exists and no variant image) */}
-                    {logic.product.images && logic.product.images.length > 1 && !logic.matchingVariant?.image && !logic.matchingVariant?.image_urls?.[0] && (
-                      <img
-                        src={logic.product.images[1]}
-                        alt={`${logic.product.title} - alternativa`}
-                        loading="lazy"
-                        decoding="async"
-                        className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                      />
-                    )}
+                    {logic.product.images &&
+                      logic.product.images.length > 1 &&
+                      !logic.matchingVariant?.image &&
+                      !logic.matchingVariant?.image_urls?.[0] && (
+                        <img
+                          src={logic.product.images[1]}
+                          alt={`${logic.product.title} — alternativa`}
+                          loading="lazy"
+                          decoding="async"
+                          className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                        />
+                      )}
                   </>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
                     Sin imagen
                   </div>
                 )}
 
-                {/* Badges — max 2, compact */}
+                {/* Badges */}
                 {(() => {
                   const badges: React.ReactNode[] = []
                   if (logic.discountPercentage) {
                     badges.push(
-                      <span key="discount" className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0.5 rounded-sm font-medium">
+                      <span
+                        key="discount"
+                        className="bg-destructive text-destructive-foreground text-[10px] px-1.5 py-0.5 font-medium"
+                      >
                         -{logic.discountPercentage}%
                       </span>
                     )
                   }
                   if (!logic.inStock) {
                     badges.push(
-                      <span key="oos" className="bg-muted text-muted-foreground text-[10px] px-1.5 py-0.5 rounded-sm font-medium">
+                      <span
+                        key="oos"
+                        className="bg-muted text-muted-foreground text-[10px] px-1.5 py-0.5 font-medium"
+                      >
                         Agotado
                       </span>
                     )
                   }
-                  // Volume & BOGO badges (rendered inline to count them)
-                  const volBogo = productRules.filter(r => r.rule_type === 'volume' || r.rule_type === 'bogo')
+                  const volBogo = productRules.filter(
+                    (r) => r.rule_type === 'volume' || r.rule_type === 'bogo'
+                  )
                   for (const rule of volBogo) {
                     if (badges.length >= 2) break
                     badges.push(<PriceRuleBadge key={rule.id} rule={rule} />)
@@ -98,91 +109,98 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
                 })()}
               </div>
 
-              <h3 className="text-black font-medium text-sm mb-1 line-clamp-2">
-                {logic.product.title}
-              </h3>
-              {logic.product.description && (
-                <p className="text-gray-600 text-xs mb-3 line-clamp-2">
-                  {logic.product.description.replace(/<[^>]*>/g, '')}
-                </p>
-              )}
+              {/* Info */}
+              <div className="p-4">
+                <h3 className="font-playfair font-semibold text-sm text-foreground mb-1 line-clamp-2">
+                  {logic.product.title}
+                </h3>
+                {logic.product.description && (
+                  <p className="font-inter text-muted-foreground text-xs mb-3 line-clamp-2 leading-relaxed">
+                    {logic.product.description.replace(/<[^>]*>/g, '')}
+                  </p>
+                )}
+              </div>
             </Link>
 
+            {/* Variants */}
             {logic.hasVariants && logic.options && (
-              <div className="mb-3 space-y-2">
+              <div className="px-4 pb-3 space-y-2">
                 {logic.options.map((opt) => (
                   <div key={opt.id}>
-                    <div className="text-xs font-medium text-black mb-1">{opt.name}</div>
+                    <div className="font-inter text-xs font-medium text-foreground mb-1">
+                      {opt.name}
+                    </div>
                     <div className="flex flex-wrap gap-2">
-                      {opt.values.filter(val => logic.isOptionValueAvailable(opt.name, val)).map((val) => {
-                        const isSelected = logic.selected[opt.name] === val
-                        const swatch = opt.name.toLowerCase() === 'color' ? opt.swatches?.[val] : undefined
+                      {opt.values
+                        .filter((val) => logic.isOptionValueAvailable(opt.name, val))
+                        .map((val) => {
+                          const isSelected = logic.selected[opt.name] === val
+                          const swatch =
+                            opt.name.toLowerCase() === 'color'
+                              ? opt.swatches?.[val]
+                              : undefined
 
-                        if (swatch) {
+                          if (swatch) {
+                            return (
+                              <button
+                                key={val}
+                                type="button"
+                                onClick={() => logic.handleOptionChange(opt.name, val)}
+                                title={`${opt.name}: ${val}`}
+                                className={`h-6 w-6 rounded-full border border-border ${
+                                  logic.selected[opt.name] && !isSelected ? 'opacity-40' : ''
+                                }`}
+                                style={{ backgroundColor: swatch }}
+                                aria-label={`${opt.name}: ${val}`}
+                              />
+                            )
+                          }
                           return (
                             <button
                               key={val}
                               type="button"
                               onClick={() => logic.handleOptionChange(opt.name, val)}
-                              title={`${opt.name}: ${val}`}
-                              className={`h-6 w-6 rounded-full border ${
-                                logic.selected[opt.name] && !isSelected ? 'opacity-40' : ''
+                              className={`border px-2 py-1 text-xs font-medium transition-colors ${
+                                isSelected
+                                  ? 'border-primary bg-primary text-primary-foreground'
+                                  : logic.selected[opt.name] && !isSelected
+                                  ? 'border-border bg-card text-foreground opacity-40'
+                                  : 'border-border bg-card text-foreground hover:border-primary'
                               }`}
-                              style={{ 
-                                backgroundColor: swatch, 
-                                borderColor: '#e5e7eb'
-                              }}
-                              aria-label={`${opt.name}: ${val}`}
-                            />
+                              aria-pressed={isSelected}
+                            >
+                              {val}
+                            </button>
                           )
-                        }
-
-                        return (
-                          <button
-                            key={val}
-                            type="button"
-                            onClick={() => logic.handleOptionChange(opt.name, val)}
-                            className={`border rounded px-2 py-1 text-xs font-medium ${
-                              isSelected 
-                                ? 'border-black bg-black text-white' 
-                                : logic.selected[opt.name] && !isSelected
-                                  ? 'border-gray-300 bg-white text-gray-700 opacity-40'
-                                  : 'border-gray-300 bg-white text-gray-700'
-                            }`}
-                            aria-pressed={isSelected}
-                            aria-label={`${opt.name}: ${val}`}
-                            title={`${opt.name}: ${val}`}
-                          >
-                            {val}
-                          </button>
-                        )
-                      })}
+                        })}
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            <div className="flex items-center justify-between">
+            {/* Price + Add */}
+            <div className="px-4 pb-4 flex items-center justify-between">
               <div className="flex flex-col">
-                <span className="text-black font-semibold">
+                <span className="font-playfair font-semibold text-foreground">
                   {logic.formatMoney(logic.currentPrice)}
                 </span>
-                {logic.currentCompareAt && logic.currentCompareAt > logic.currentPrice && (
-                  <span className="text-gray-400 text-xs line-through">
-                    {logic.formatMoney(logic.currentCompareAt)}
-                  </span>
-                )}
+                {logic.currentCompareAt &&
+                  logic.currentCompareAt > logic.currentPrice && (
+                    <span className="font-inter text-muted-foreground text-xs line-through">
+                      {logic.formatMoney(logic.currentCompareAt)}
+                    </span>
+                  )}
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  logic.onAddToCartSuccess() // Hook para features adicionales
+                  logic.onAddToCartSuccess()
                   logic.handleAddToCart()
                 }}
                 disabled={!logic.canAddToCart}
-                className="text-black border-black hover:bg-black hover:text-white disabled:opacity-50"
+                className="font-inter text-xs font-semibold tracking-wider uppercase disabled:opacity-50"
               >
                 {logic.inStock ? 'Agregar' : 'Agotado'}
               </Button>

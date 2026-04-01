@@ -9,15 +9,11 @@ import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
 import { useCartUISafe } from '@/components/CartProvider'
 import { useCart } from '@/contexts/CartContext'
-import { useCollections } from '@/hooks/useCollections'
-import { Input } from '@/components/ui/input'
 import { ScrollLink } from '@/components/ScrollLink'
 
 /**
- * EDITABLE TEMPLATE - EcommerceTemplate
- * 
- * Template específico para páginas de ecommerce con header, footer y cart.
- * El agente IA puede modificar completamente el diseño, colores, layout.
+ * EDITABLE TEMPLATE — EcommerceTemplate (J/A Abogados y Consultores)
+ * Deep navy header with gold accents — Justice by Attorneys
  */
 
 interface EcommerceTemplateProps {
@@ -39,58 +35,52 @@ export const EcommerceTemplate = ({
   headerClassName,
   footerClassName,
   layout = 'default',
-  hideFloatingCartOnMobile = false
+  hideFloatingCartOnMobile = false,
 }: EcommerceTemplateProps) => {
   const cartUI = useCartUISafe()
   const openCart = cartUI?.openCart ?? (() => {})
   const { getTotalItems } = useCart()
   const totalItems = getTotalItems()
-  const { hasCollections, loading: loadingCollections } = useCollections()
+
+  const navLinkClass =
+    'font-inter text-xs font-medium tracking-[0.15em] uppercase text-foreground/60 hover:text-primary transition-colors duration-200'
 
   const header = (
-    <div className={`py-2 ${headerClassName}`}>
+    <div className={`py-3 ${headerClassName ?? ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-8">
+
           {/* Logo */}
           <BrandLogoLeft />
 
-          {/* Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <nav className="flex space-x-6">
-              {!loadingCollections && hasCollections && (
-                <ScrollLink 
-                  to="/#collections" 
-                  className="text-foreground/70 hover:text-foreground transition-colors"
-                >
-                  Colecciones
-                </ScrollLink>
-              )}
-              <ScrollLink 
-                to="/#products" 
-                className="text-foreground/70 hover:text-foreground transition-colors"
-              >
-                Productos
-              </ScrollLink>
-              <Link 
-                to="/blog" 
-                className="text-foreground/70 hover:text-foreground transition-colors"
-              >
-                Blog
-              </Link>
-            </nav>
-          </div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8" aria-label="Navegación principal">
+            <ScrollLink to="/#nosotros"  className={navLinkClass}>Nosotros</ScrollLink>
+            <ScrollLink to="/#servicios" className={navLinkClass}>Áreas de Práctica</ScrollLink>
+            <ScrollLink to="/#consultas" className={navLinkClass}>Servicios</ScrollLink>
+            <Link to="/blog"             className={navLinkClass}>Blog</Link>
+            <ScrollLink to="/#contacto"  className={navLinkClass}>Contacto</ScrollLink>
+          </nav>
 
-          {/* Profile & Cart */}
-          <div className="flex items-center space-x-2">
+          {/* Right: CTA + Cart + Profile */}
+          <div className="flex items-center gap-2">
+            <Button
+              asChild
+              size="sm"
+              className="hidden sm:inline-flex font-inter text-xs font-semibold tracking-[0.2em] uppercase px-5"
+            >
+              <a href="#contacto">Agendar Consulta</a>
+            </Button>
+
             <ProfileMenu />
-            
+
             {showCart && (
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={openCart}
                 className="relative"
-                aria-label="Ver carrito"
+                aria-label="Ver carrito de servicios"
               >
                 <ShoppingCart className="h-5 w-5" />
                 {totalItems > 0 && (
@@ -106,9 +96,7 @@ export const EcommerceTemplate = ({
         {/* Page Title */}
         {pageTitle && (
           <div className="mt-6">
-            <h1 className="text-3xl font-bold text-foreground">
-              {pageTitle}
-            </h1>
+            <h1 className="font-playfair text-3xl font-bold text-foreground">{pageTitle}</h1>
           </div>
         )}
       </div>
@@ -116,45 +104,84 @@ export const EcommerceTemplate = ({
   )
 
   const footer = (
-    <div className={`bg-black text-white py-12 ${footerClassName}`}>
+    <div className={`bg-background py-16 ${footerClassName ?? ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
           {/* Brand */}
-          <div>
+          <div className="lg:col-span-1">
             <BrandLogoLeft />
-            <p className="mt-4 text-white/70">
-              Tu tienda online de confianza
+            <p className="font-inter text-muted-foreground text-sm leading-relaxed mt-5 max-w-xs">
+              Brindando la excelencia que su organización merece. Asesoría legal integral
+              para empresas en los sectores más exigentes del Perú.
             </p>
+          </div>
+
+          {/* Practice Areas */}
+          <div>
+            <h3 className="font-inter text-xs font-semibold text-primary tracking-[0.3em] uppercase mb-5">
+              Áreas de Práctica
+            </h3>
+            <ul className="space-y-2.5">
+              {['Derecho Ambiental', 'Derecho Minero', 'Seguridad y Salud', 'Derecho Laboral', 'Auditoría Legal'].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#servicios"
+                    className="font-inter text-muted-foreground text-sm hover:text-primary transition-colors duration-200"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold mb-4 text-white">Enlaces</h3>
-            <div className="space-y-2">
-              <Link 
-                to="/" 
-                className="block text-white/70 hover:text-white transition-colors"
-              >
-                Inicio
-              </Link>
-              <Link 
-                to="/blog" 
-                className="block text-white/70 hover:text-white transition-colors"
-              >
-                Blog
-              </Link>
-            </div>
+            <h3 className="font-inter text-xs font-semibold text-primary tracking-[0.3em] uppercase mb-5">
+              Firma
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: 'Inicio', href: '/' },
+                { label: 'Nosotros', href: '#nosotros' },
+                { label: 'Servicios', href: '#consultas' },
+                { label: 'Blog', href: '/blog' },
+                { label: 'Contacto', href: '#contacto' },
+              ].map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    to={href}
+                    className="font-inter text-muted-foreground text-sm hover:text-primary transition-colors duration-200"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          {/* Social Links */}
+          {/* Social */}
           <div>
-            <h3 className="font-semibold mb-4 text-white">Síguenos</h3>
+            <h3 className="font-inter text-xs font-semibold text-primary tracking-[0.3em] uppercase mb-5">
+              Síguenos
+            </h3>
             <SocialLinks />
+            <p className="font-inter text-muted-foreground text-xs mt-5 leading-relaxed">
+              Lima, Perú<br />
+              San Borja
+            </p>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-white/20 text-center text-white/70">
-          <p>&copy; 2025 Tu Tienda. Todos los derechos reservados.</p>
+        {/* Bottom bar */}
+        <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="font-inter text-muted-foreground text-xs tracking-wide">
+            &copy; {new Date().getFullYear()} J/A Abogados y Consultores. Todos los derechos reservados.
+          </p>
+          <p className="font-inter text-muted-foreground/50 text-xs tracking-[0.3em] uppercase">
+            Justice by Attorneys
+          </p>
         </div>
       </div>
     </div>
@@ -162,7 +189,7 @@ export const EcommerceTemplate = ({
 
   return (
     <>
-      <PageTemplate 
+      <PageTemplate
         header={header}
         footer={footer}
         className={className}
@@ -170,7 +197,7 @@ export const EcommerceTemplate = ({
       >
         {children}
       </PageTemplate>
-      
+
       {showCart && <FloatingCart hideOnMobile={hideFloatingCartOnMobile} />}
     </>
   )
